@@ -40,6 +40,11 @@ class PaymentEngine:
         print(client)
         return client
 
+    def get_all_clients(self):
+        self.database.export_all_clients_to_csv(filename='client_accounts.csv')
+
+
+
     def get_client_operation(self, df_row):
         return df_row[1][InputHeadings.TYPE.value]
 
@@ -47,6 +52,8 @@ class PaymentEngine:
         c = Client(id=client_id, available=available, held=held, total=total, locked=locked)
         self.database.upsert_client(self.app, c)
 
+    def export_client_csv(self):
+        pass
 
 if __name__ == '__main__':
     payment_engine = PaymentEngine()
@@ -89,3 +96,6 @@ if __name__ == '__main__':
                 total = client.total - amount
                 locked = True
                 payment_engine.set_client(client_id=client_id, available=client.available, held=held, total=total, locked=locked)
+
+
+    payment_engine.get_all_clients()

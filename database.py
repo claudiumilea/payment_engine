@@ -1,6 +1,6 @@
 from app import db
 from models import Transaction, Client
-
+import pandas as pd
 
 class Database:
     def upsert_client(self, app, client_dataclass):
@@ -23,3 +23,14 @@ class Database:
                    locked=selected_client.locked
                    )
         return c
+
+    def select_all_clients(self, app) -> list:
+        app.app_context().push()
+        all_clients = db.session.query(Client).all()
+        return all_clients
+
+    def export_all_clients_to_csv(self, filename):
+        clients_df = pd.read_sql('clients', db.session.bind)
+        clients_df = clients_df.drop(['created_at', 'updated_at'], axis=1)
+        clients_df.to_csv(filename,index=False)
+
